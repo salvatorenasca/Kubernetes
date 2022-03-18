@@ -1,0 +1,63 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-cluster
+  region: us-east-1
+  version: "1.13"
+
+vpc:
+  id: "vpc-xxxxxxxxxxxxxxx"
+  cidr: "10.207.0.0/20"
+  subnets:
+    private:
+      us-east-1a: { id: subnet-xxxxxxxxxxxxxxxxx }
+      us-east-1b: { id: subnet-xxxxxxxxxxxxxxxxx }
+    public:
+      us-east-1a: { id: subnet-xxxxxxxxxxxxxxxxx }
+      us-east-1b: { id: subnet-xxxxxxxxxxxxxxxxx }
+
+#managedNodeGroups:
+#  - name: lab-mng-1
+#    labels: { role: lab-dev }
+#    instanceType: t3.micro
+#    desiredCapacity: 1
+
+nodeGroups:
+  - name: lab-nodg1-prd
+    labels: { role: lab-prd }
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    privateNetworking: true
+    ssh:
+      publicKeyName: prd-corp-lab-key1
+    tags:
+      'Environment': 'Production'
+      'Analytics': 'True'
+      'Plataforma': 'linux'
+      'Proyecto': 'Lab'
+
+cloudWatch:
+    clusterLogging:
+        # enable specific types of cluster control plane logs
+        #enableTypes: ["audit", "authenticator", "controllerManager"]
+        enableTypes: ["all"]
+        # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+        # supported special values: "*" and "all"
+
+#  - name: lab-nodg2-prd
+#    labels: { role: lab-dev }
+#    instanceType: t3.medium
+#    desiredCapacity: 1
+#    minSize: 1
+#    maxSize: 2
+#    privateNetworking: true
+#    ssh:
+#      publicKeyName: dev-lab-key1
+#    tags:
+#      'Environment': 'Development'
+#      'Analytics': 'True'
+#      'Plataforma': 'linux'
+#      'Proyecto': 'Lab'
